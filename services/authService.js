@@ -39,6 +39,4 @@ const token = jwt.sign({ userId: user.user_id,name:user.name, role: user.role },
     //  3: Return the user data (can also include JWT generation here)
     return { token, user: { id: user.user_id, name: user.name, email: user.email, role: user.role } };  };
 
-  // for logout 
-    const { addToBlacklist } = require('../utils/tokenBlacklist');
 
