@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const userRepo = require('../repositories/userRepository');
 
+//sign up
 exports.register = async ({ name, email, password, role }) => {
   const existing = await userRepo.getUserByEmail(email);
   if (existing) throw new Error('Email is already registered');
@@ -22,7 +23,7 @@ exports.register = async ({ name, email, password, role }) => {
   return { id: userId, name: newUser.name, email: newUser.email, role: newUser.role };
 };
 
-
+//sign in 
 exports.login = async ({ email, password }) => {
     //  1: Retrieve user by email
     const user = await userRepo.getUserByEmail(email);
@@ -33,7 +34,11 @@ exports.login = async ({ email, password }) => {
     if (!match) throw new Error('Invalid password');
   
 // Generate JWT token
-const token = jwt.sign({ userId: user.user_id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+const token = jwt.sign({ userId: user.user_id,name:user.name, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     //  3: Return the user data (can also include JWT generation here)
     return { token, user: { id: user.user_id, name: user.name, email: user.email, role: user.role } };  };
+
+  // for logout 
+    const { addToBlacklist } = require('../utils/tokenBlacklist');
+
