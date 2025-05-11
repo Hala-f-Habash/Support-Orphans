@@ -12,13 +12,30 @@ exports.getOrphanDetails = async (req, res) => {
 };
 
 exports.createOrphan = async (req, res) => {
-  const { name, age, education, health, orphanage_id } = req.body;
-  const profile_img = req.file ? req.file.filename : null;
-  const orphanId = await orphanService.createOrphan({
-    name, age, education, health, orphanage_id, profile_img
-  });
-  res.status(201).json({ message: 'Orphan created', orphanId });
+  try {
+    // 🛡️ Only allow admins to create orphans
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can create orphans' });
+    }
+
+    const { name, age, education, health, orphanage_id } = req.body;
+    const profile_img = req.file ? req.file.filename : null;
+
+    const orphanId = await orphanService.createOrphan({
+      name,
+      age,
+      education,
+      health,
+      orphanage_id,
+      profile_img
+    });
+
+    res.status(201).json({ message: 'Orphan created', orphanId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
+
 
 exports.sponsorOrphan = async (req, res) => {
   try {

@@ -4,13 +4,13 @@ const orphanController = require('../controllers/orphanController');
 const upload = require('../middleware/uploadImage');
 const { body } = require('express-validator');
 const { validate } = require('../middleware/validateInput');
-const { authenticate } = require('../middleware/authMiddleware'); // ✅ adjust path as needed
+const { authenticate } = require('../middleware/authMiddleware'); 
+
 
 
 router.get('/', orphanController.getAllOrphans);
 router.get('/:id', orphanController.getOrphanDetails);
-
-router.post('/', upload.single('profile_img'), orphanController.createOrphan);
+router.post('/',authenticate, upload.single('profile_img'), orphanController.createOrphan);
 
 router.post(
   '/:id/sponsor',authenticate,//for JWT
