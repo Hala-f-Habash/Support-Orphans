@@ -6,7 +6,7 @@ require('dotenv').config();
 const logoutRoutes = require('./routes/logoutRoutes');
 const loginSigniup= require('./routes/authRoutes');
 const testLogOut= require('./routes/userRoutes');
-
+const orphans= require('./routes/orphanRoutes');
 app.use(express.json());
 //means that Express is setting up a route handler for all requests that start with /api/auth.
 
@@ -14,6 +14,9 @@ app.use(express.json());
 app.use('/api/auth',loginSigniup);
 app.use('/api/auth', logoutRoutes);
 app.use('/api/user',testLogOut );
+app.use('/uploads', express.static('uploads'));
+app.use('/api/orphans',orphans);
+
 
 
 
