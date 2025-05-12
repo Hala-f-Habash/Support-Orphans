@@ -446,3 +446,30 @@ UNLOCK TABLES;
 
 -- Dump completed on 2025-05-11 14:10:55
 
+DROP TABLE IF EXISTS `payment_transactions`;
+
+-- Payment transactions table
+CREATE TABLE payment_transactions (
+  transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  donation_id INT,
+  amount DECIMAL(10,2) NOT NULL,
+  status ENUM('pending', 'completed', 'failed') NOT NULL,
+  gateway_response TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (donation_id) REFERENCES donations(donation_id)
+);
+
+DROP TABLE IF EXISTS `donation_tracking`;
+
+
+-- Donation tracking table
+CREATE TABLE donation_tracking (
+  tracking_id INT AUTO_INCREMENT PRIMARY KEY,
+  donation_id INT NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  update_message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (donation_id) REFERENCES donations(donation_id)
+);
