@@ -7,6 +7,7 @@ const logoutRoutes = require('./routes/logoutRoutes');
 const loginSigniup= require('./routes/authRoutes');
 const testLogOut= require('./routes/userRoutes');
 const orphans= require('./routes/orphanRoutes');
+const donation = require("./routes/donationRoutes")
 app.use(express.json());
 //means that Express is setting up a route handler for all requests that start with /api/auth.
 
@@ -16,6 +17,7 @@ app.use('/api/auth', logoutRoutes);
 app.use('/api/user',testLogOut );
 app.use('/uploads', express.static('uploads'));
 app.use('/api/orphans',orphans);
+app.use('/api/donations',donation);
 
 
 
