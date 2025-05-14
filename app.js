@@ -10,6 +10,8 @@ const orphans= require('./routes/orphanRoutes');
 const volunteers= require('./routes/volunteerRoutes');
 const orphanageRequestRoutes = require('./routes/orphanageRequestRoutes');
 const volunteerMatchRoutes = require('./routes/volunteerMatchRoutes');
+const campaignRoutes = require('./routes/campaignRoutes');
+
 
 
 app.use(express.json());
@@ -24,6 +26,8 @@ app.use('/api/orphans',orphans);
 app.use('/api/volunteers',volunteers);
 app.use('/api/requests', orphanageRequestRoutes);
 app.use('/api/match', volunteerMatchRoutes);
+app.use('/api/campaigns', campaignRoutes);
+
 
 
 
