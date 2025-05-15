@@ -174,13 +174,15 @@ DROP TABLE IF EXISTS orphanages;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE orphanages (
-  orphanage_id int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL,
-  verified tinyint(1) DEFAULT NULL,
-  address text,
-  contact_email varchar(100) DEFAULT NULL,
-  PRIMARY KEY (orphanage_id)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  orphanage_id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) DEFAULT NULL,
+  verified TINYINT(1) DEFAULT NULL,
+  address TEXT,
+  contact_email VARCHAR(100) DEFAULT NULL,
+  manager_id INT,
+  PRIMARY KEY (orphanage_id),
+  FOREIGN KEY (manager_id) REFERENCES users(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -471,5 +473,5 @@ CREATE TABLE donation_tracking (
   status VARCHAR(50) NOT NULL,
   update_message TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (donation_id) REFERENCES donations(donation_id)
+  FOREIGN KEY (donation_id) REFERENCES donations(donation_id) ON DELETE CASCADE
 );

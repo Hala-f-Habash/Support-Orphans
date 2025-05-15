@@ -8,6 +8,10 @@ const { authenticate } = require('../middleware/authMiddleware');
 // Public routes
 router.get('/', authenticate,donationController.getAllDonations);
 router.get('/:id',authenticate, donationController.getDonationDetails);
+router.get('/orphanage/:id',authenticate, donationController.getOrphanageDonations);//test
+
+router.get('/type_summary', authenticate, donationController.getAllDonationsByType);
+
 
 // Authenticated routes
 router.post(
@@ -26,6 +30,8 @@ router.get(
 
 
 router.patch('/:id/status', authenticate, donationController.updateDonationStatus);
+
+router.delete('/:id',authenticate, donationController.deleteDonation);//test
 
 
 module.exports = router;

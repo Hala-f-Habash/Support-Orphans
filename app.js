@@ -7,11 +7,14 @@ const logoutRoutes = require('./routes/logoutRoutes');
 const loginSigniup= require('./routes/authRoutes');
 const testLogOut= require('./routes/userRoutes');
 const orphans= require('./routes/orphanRoutes');
-const donation = require("./routes/donationRoutes")
+const donation = require("./routes/donationRoutes");
 const volunteers= require('./routes/volunteerRoutes');
 const orphanageRequestRoutes = require('./routes/orphanageRequestRoutes');
 const volunteerMatchRoutes = require('./routes/volunteerMatchRoutes');
 
+const donationDirect = require('./controllers/donationController');
+const reviewRoutes = require('./routes/reviewRoutes');
+//const deliveryRoutes = require('./routes/deliveryRoutes');
 
 app.use(express.json());
 //means that Express is setting up a route handler for all requests that start with /api/auth.
@@ -22,10 +25,15 @@ app.use('/api/auth', logoutRoutes);
 app.use('/api/user',testLogOut );
 app.use('/uploads', express.static('uploads'));
 app.use('/api/orphans',orphans);
+app.use('/api/donations/type_summary',donationDirect.getAllDonationsByType);
 app.use('/api/donations',donation);
+app.use('/api/donations', donation);
+
 app.use('/api/volunteers',volunteers);
 app.use('/api/requests', orphanageRequestRoutes);
 app.use('/api/match', volunteerMatchRoutes);
+app.use('/api/reviews', reviewRoutes);
+//app.use('/api/deliveries', deliveryRoutes);
 
 
 const PORT = process.env.PORT || 3000;

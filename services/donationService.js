@@ -2,12 +2,13 @@ const donationRepo = require('../repositories/donationRepository');
 const paymentService = require('./paymentService');
 const db = require('../config/db');
 const donationTrackRepo = require("../repositories/donationTrackingRepository")
+
 exports.createDonation = async (donationData) => {
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
 
-    // 1. Process payment if monetary donation
+
     let paymentResult = { success: true };
     if (donationData.type === 'money') {
       paymentResult = await paymentService.processPayment({
@@ -20,10 +21,10 @@ exports.createDonation = async (donationData) => {
       }
     }
 
-    // 2. Create donation record
+
     const donationId = await donationRepo.createDonation(donationData);
     
-    // 3. Link payment to donation (if monetary)
+
     if (donationData.type === 'money' && paymentResult.transactionId) {
       await connection.query(
         'UPDATE payment_transactions SET donation_id = ? WHERE transaction_id = ?',
@@ -31,7 +32,7 @@ exports.createDonation = async (donationData) => {
       );
     }
 
-    // 4. Create initial tracking record
+
     await donationTrackRepo.createDonationTracking({
       donation_id: donationId,
       status: 'received',
@@ -57,9 +58,20 @@ exports.getUserDonations = async (userId) => donationRepo.getDonationsByUser(use
 exports.getOrphanageDonations = async (orphanageId) => donationRepo.getDonationsByOrphanage(orphanageId);
 
 exports.updateDonationStatus = async (donationId, status) => {
+  //send emails for updates 
   await donationRepo.updateDonationTrackingStatus({
     donation_id: donationId,
     status,
-    update_message: `Donation status updated to ${status}`
+    update_message: "Donation status updated to ${status}"
   });
+};
+
+exports.deleteDonation = async (id) => donationRepo.deleteDonationById(id);
+
+///need to test delete && use getDonationsByUser+getDonationsByOrphanage
+
+
+exports.getAllDonationsByType = async () => {
+  
+  return await donationRepo.getAllDonationsByType();
 };

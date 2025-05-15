@@ -1,10 +1,8 @@
 const db = require('../config/db');
-const trackDonations = require("./donationTrackingRepository")
+
 exports.createDonation = async (donationData) => {
   const [result] = await db.query(
-    `INSERT INTO donations 
-    (user_id, orphanage_id, type, category, amount, details) 
-    VALUES (?, ?, ?, ?, ?, ?)`,
+    'INSERT INTO donations (user_id, orphanage_id, type, category, amount, details) VALUES (?, ?, ?, ?, ?, ?)',
     [
       donationData.user_id,
       donationData.orphanage_id,
@@ -26,6 +24,28 @@ exports.getDonationById = async (id) => {
   const [rows] = await db.query('SELECT * FROM donations WHERE donation_id = ?', [id]);
   return rows[0];
 };
+
+exports.deleteDonationById = async (id) => {
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    //first delete tracking 
+    await connection.query('DELETE FROM donation_tracking WHERE donation_id = ?', [id]);
+//delete the donation
+    const [result] = await connection.query('DELETE FROM donations WHERE donation_id = ?', [id]);
+
+    await connection.commit();
+    return result;
+
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 
 exports.getDonationsByUser = async (userId) => {
   const [rows] = await db.query('SELECT * FROM donations WHERE user_id = ?', [userId]);
@@ -54,4 +74,10 @@ exports.updateDonationTrackingStatus = async ({ donation_id, status,update_messa
     [status, update_message, donation_id]
   );
 };
+
+exports.getAllDonationsByType = async () => {
+  const [rows] = await db.query('SELECT type, COUNT(*) as count FROM donations GROUP BY type');
+  return rows;
+};
+
 

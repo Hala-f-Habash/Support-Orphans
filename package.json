@@ -1,7 +1,7 @@
 {
   "name": "project_hopeconnect",
   "version": "1.0.0",
-  "description": "",
+  "description": "HopeConnect API for orphan support platform",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bad-words": "^3.0.4",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",

@@ -4,7 +4,6 @@ exports.createDonation = async (req, res) => {
   try {
     //console.log('Decoded user from token:', req.user);
 
-    // Allow donors, sponsors, and admins to create donations
     const allowedRoles = ['donor', 'sponsor', 'admin'];
     if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({ 
@@ -15,7 +14,7 @@ exports.createDonation = async (req, res) => {
 
     const donationData = {
       ...req.body,
-      user_id: req.user.userId   // Authenticated user's ID
+      user_id: req.user.userId   
     };
     
     const donationId = await donationService.createDonation(donationData);
@@ -34,7 +33,6 @@ exports.createDonation = async (req, res) => {
 
 exports.getAllDonations = async (req, res) => {
   try {
-    // Only admins can view all donations
     if (req.user.role !== 'admin') {
       return res.status(403).json({ 
         success: false,
@@ -57,7 +55,6 @@ exports.getDonationDetails = async (req, res) => {
       return res.status(404).json({ success: false, error: 'Donation not found' });
     }
 
-    // Allow admin, donation owner, or orphanage manager to view details
     const canView = req.user.role === 'admin' || 
                    donation.user_id === req.user.userId || 
                    req.user.role === 'orphanageManager';
@@ -77,7 +74,6 @@ exports.getDonationDetails = async (req, res) => {
 
 exports.getUserDonations = async (req, res) => {
   try {
-    // Users can only view their own donations
     const donations = await donationService.getUserDonations(req.user.userId );
     res.json({ success: true, data: donations });
   } catch (error) {
@@ -87,7 +83,6 @@ exports.getUserDonations = async (req, res) => {
 
 exports.updateDonationStatus = async (req, res) => {
   try {
-    // Only admins and orphanage managers can update donation status
     const allowedRoles = ['admin', 'orphanageManager'];
     if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({ 
@@ -98,6 +93,65 @@ exports.updateDonationStatus = async (req, res) => {
 
     await donationService.updateDonationStatus(req.params.id, req.body.status);
     res.json({ success: true, message: 'Donation status updated' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.deleteDonation = async (req, res) => {
+  try {
+
+
+  const donationToDelete = await donationService.getDonationById(req.params.id);
+    
+    if (!donationToDelete) {
+      return res.status(404).json({ success: false, error: 'Donation not found' });
+    }
+       const canDelete = req.user.role === 'admin' || 
+                   donationToDelete.user_id === req.user.userId || 
+                   req.user.role === 'orphanageManager';
+    
+    if (!canDelete) {
+      return res.status(403).json({ 
+        success: false,
+        error: 'Not authorized to Delete this donation' 
+      });
+    }
+
+  await donationService.deleteDonation(req.params.id);
+
+    res.json({ message: 'Donation deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getOrphanageDonations = async (req, res) => {
+  try {
+    const OrphanageDonations = await donationService.getOrphanageDonations(req.params.id);
+    res.json({ success: true, data: OrphanageDonations });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+////////////
+
+
+exports.getAllDonationsByType = async (req, res) => {
+  try {
+    console.log("here from getAllDonationsByType");
+
+    const data = await donationService.getAllDonationsByType();
+
+    console.log("Data from service:", data);
+
+    const chartData = {
+      labels: data.map(d => d.type),
+      values: data.map(d => d.count)
+    };
+
+    res.json({ success: true, data, chartData });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

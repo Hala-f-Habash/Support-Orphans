@@ -13,3 +13,14 @@ exports.insertRequest = async ({ orphanage_id, service_type, description, needed
   );
   return result.insertId;
 };
+
+exports.getOrphanageById = async (id) => {
+  const [rows] = await db.query('SELECT * FROM orphanages WHERE orphanage_id = ?', [id]);
+  return rows[0];
+};
+
+ 
+exports.verifyOrphanage = async (id) => {
+  const [rows] = await db.query('SELECT * FROM orphanages WHERE orphanage_id = ?', [id]);
+  return rows[0];
+};

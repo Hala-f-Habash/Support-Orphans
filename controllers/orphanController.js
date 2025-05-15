@@ -13,7 +13,7 @@ exports.getOrphanDetails = async (req, res) => {
 
 exports.createOrphan = async (req, res) => {
   try {
-    // 🛡️ Only allow admins to create orphans
+    
     if (req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Only admins can create orphans' });
     }
@@ -64,7 +64,6 @@ exports.postUpdate = async (req, res) => {
   try {
     const user = req.user;
 
-    //  Allow only admin users to post orphan updates
     if (user.role !== 'admin') {
       return res.status(403).json({ error: 'Only admins can post updates.' });
     }

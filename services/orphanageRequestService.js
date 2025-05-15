@@ -14,3 +14,7 @@ exports.createRequest = async (data) => {
 
   return await requestRepo.insertRequest(fullData);
 };
+
+exports.getOrphanageById = async (id) => {
+  return await requestRepo.getOrphanageById(id);
+};
