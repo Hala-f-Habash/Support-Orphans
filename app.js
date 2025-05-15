@@ -11,6 +11,8 @@ const donation = require("./routes/donationRoutes");
 const volunteers= require('./routes/volunteerRoutes');
 const orphanageRequestRoutes = require('./routes/orphanageRequestRoutes');
 const volunteerMatchRoutes = require('./routes/volunteerMatchRoutes');
+const campaignRoutes = require('./routes/campaignRoutes');
+
 
 const donationDirect = require('./controllers/donationController');
 const reviewRoutes = require('./routes/reviewRoutes');
@@ -34,6 +36,8 @@ app.use('/api/requests', orphanageRequestRoutes);
 app.use('/api/match', volunteerMatchRoutes);
 app.use('/api/reviews', reviewRoutes);
 //app.use('/api/deliveries', deliveryRoutes);
+app.use('/api/campaigns', campaignRoutes);
+
 
 
 const PORT = process.env.PORT || 3000;
