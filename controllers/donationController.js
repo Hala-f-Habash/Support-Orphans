@@ -17,12 +17,14 @@ exports.createDonation = async (req, res) => {
       user_id: req.user.userId   
     };
     
-    const donationId = await donationService.createDonation(donationData);
-    res.status(201).json({ 
-      success: true,
-      donationId,
-      message: 'Donation created successfully' 
-    });
+const { donationId, fee, netAmount } = await donationService.createDonation(donationData);
+  res.status(201).json({ 
+  success: true,
+  donationId,
+  platform_fee: fee,
+  amount_sent_to_cause: netAmount,
+  message: 'Donation created successfully'
+});
   } catch (error) {
     res.status(400).json({ 
       success: false,

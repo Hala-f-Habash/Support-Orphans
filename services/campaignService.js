@@ -37,6 +37,5 @@ exports.donateToCampaign = async ({ campaign_id, user_id, amount }) => {
   return await campaignRepo.insertCampaignDonation({ campaign_id, user_id, amount });
 };
 
-const campaignRepo = require('../repositories/campaignRepository');
-const { sendEmail } = require('../utils/sendEmail');
+
 

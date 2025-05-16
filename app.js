@@ -12,8 +12,8 @@ const volunteers= require('./routes/volunteerRoutes');
 const orphanageRequestRoutes = require('./routes/orphanageRequestRoutes');
 const volunteerMatchRoutes = require('./routes/volunteerMatchRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
-
-
+const revenueFees=require('./routes/financeRoutes');
+const partners=require('./routes/partnersRoutes');
 
 const donationDirect = require('./controllers/donationController');
 const reviewRoutes = require('./routes/reviewRoutes');
@@ -37,6 +37,12 @@ app.use('/api/requests', orphanageRequestRoutes);
 app.use('/api/orphanage', orphanageRequestRoutes);
 app.use('/api/match', volunteerMatchRoutes);
 app.use('/api/campaigns', campaignRoutes);
+app.use('/api/finance', revenueFees);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/partners', partners);
+
+
+
 
 
 

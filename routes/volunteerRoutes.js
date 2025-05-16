@@ -15,6 +15,7 @@ router.post('/register',authenticate, [
   ],
   validate, volunteerController.registerVolunteer);
 
+router.delete('/delete', authenticate, volunteerController.deleteVolunteer);
 
 
 

@@ -9,7 +9,7 @@ exports.createDonation = async (donationData) => {
     await connection.beginTransaction();
 
 
-    let paymentResult = { success: true };
+    let paymentResult = { success: true, fee: 0, netAmount: donationData.amount };
     if (donationData.type === 'money') {
       paymentResult = await paymentService.processPayment({
         amount: donationData.amount,
@@ -19,6 +19,8 @@ exports.createDonation = async (donationData) => {
       if (!paymentResult.success) {
         throw new Error(paymentResult.error || 'Payment processing failed');
       }
+      donationData.amount = paymentResult.netAmount;
+
     }
 
 
@@ -40,7 +42,11 @@ exports.createDonation = async (donationData) => {
     });
 
     await connection.commit();
-    return donationId;
+return {
+  donationId,
+  fee: paymentResult.fee,
+  netAmount: donationData.amount
+};
   } catch (error) {
     await connection.rollback();
     throw error;

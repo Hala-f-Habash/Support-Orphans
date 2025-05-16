@@ -7,3 +7,10 @@ exports.createVolunteerProfile = async ({ volunteer_id, service_type, availabili
   );
   return result.insertId;
 };
+exports.deleteVolunteer = async (volunteerId) => {
+  const [result] = await db.query(
+    'DELETE FROM volunteers WHERE volunteer_id = ?',
+    [volunteerId]
+  );
+  return result.affectedRows;
+};
