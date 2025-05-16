@@ -1,5 +1,8 @@
 const donationService = require('../services/donationService');
 
+const {getLocationFromIP} = require("../utils/axios");
+
+
 exports.createDonation = async (req, res) => {
   try {
     //console.log('Decoded user from token:', req.user);
@@ -12,16 +15,22 @@ exports.createDonation = async (req, res) => {
       });
     }
 
+
     const donationData = {
       ...req.body,
       user_id: req.user.userId   
     };
-    
-    const donationId = await donationService.createDonation(donationData);
+        const userLocation = await getLocationFromIP(req); 
+
+        const locationStr = req.body.location;
+
+   const { donationId, deliveryInfo }= await donationService.createDonation(donationData,userLocation,locationStr);
+
     res.status(201).json({ 
       success: true,
       donationId,
-      message: 'Donation created successfully' 
+      message: 'Donation created successfully',
+      ...(deliveryInfo && { delivery: deliveryInfo })
     });
   } catch (error) {
     res.status(400).json({ 

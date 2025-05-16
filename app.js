@@ -14,7 +14,7 @@ const volunteerMatchRoutes = require('./routes/volunteerMatchRoutes');
 
 const donationDirect = require('./controllers/donationController');
 const reviewRoutes = require('./routes/reviewRoutes');
-//const deliveryRoutes = require('./routes/deliveryRoutes');
+const deliveryRoutes = require('./routes/deliveryRoutes');
 
 app.use(express.json());
 //means that Express is setting up a route handler for all requests that start with /api/auth.
@@ -34,7 +34,7 @@ app.use('/api/requests', orphanageRequestRoutes);
 app.use('/api/orphanage', orphanageRequestRoutes);
 app.use('/api/match', volunteerMatchRoutes);
 app.use('/api/reviews', reviewRoutes);
-//app.use('/api/deliveries', deliveryRoutes);
+app.use('/api/delivery', deliveryRoutes);
 
 
 const PORT = process.env.PORT || 3000;
