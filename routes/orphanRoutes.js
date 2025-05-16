@@ -5,7 +5,10 @@ const upload = require('../middleware/uploadImage');
 const { body } = require('express-validator');
 const { validate } = require('../middleware/validateInput');
 const { authenticate } = require('../middleware/authMiddleware'); 
-
+const {
+  sponsorOrphanValidation,
+  postUpdateValidation
+} = require('../validations/orphanValidation');
 
 
 router.get('/', orphanController.getAllOrphans);
@@ -14,20 +17,14 @@ router.post('/',authenticate, upload.single('profile_img'), orphanController.cre
 
 router.post(
   '/:id/sponsor',authenticate,//for JWT
-  [
-    body('type').isIn(['monthly', 'one-time']),
-    body('amount').isFloat({ min: 1 })
-  ],
+  sponsorOrphanValidation,
   validate,
   orphanController.sponsorOrphan
 );
 
 router.post(
   '/:id/updates',authenticate,
-  [
-    body('type').isIn(['medical', 'education', 'general']),
-    body('description').notEmpty()
-  ],
+ postUpdateValidation,
   validate,
   orphanController.postUpdate
 );

@@ -4,16 +4,16 @@ const { validate } = require('../middleware/validateInput');
 const campaignController = require('../controllers/campaignController');
 
 const { authenticate } = require('../middleware/authMiddleware');
+const {createCampaignValidation} = require("../validations/createCampaignValidation");
+const {createCampaignDonateValidation} = require("../validations/createDonationCampValidation");
+
+
 const router = express.Router();
 
 router.post(
   '/',
-  authenticate,
-  [
-  body('title').notEmpty().withMessage('Title is required'),
-  body('description').isLength({ min: 10 }).withMessage('Description must be at least 10 characters'),
-  body('location').optional().isString().withMessage('Location must be a string') 
-],
+  authenticate,createCampaignValidation
+ ,
 
   validate,
   campaignController.createCampaign
@@ -23,12 +23,8 @@ router.get('/', campaignController.getActiveCampaigns);
 
 router.post(
   '/:id/donate',
-  authenticate,
-  [
-    body('amount')
-      .isFloat({ min: 1 })
-      .withMessage('Amount must be a positive number')
-  ],
+  authenticate,createCampaignDonateValidation
+ ,
   validate,
   campaignController.donateToCampaign
 );

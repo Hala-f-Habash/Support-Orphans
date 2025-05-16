@@ -5,14 +5,11 @@ const router = express.Router();
 const { authenticate } = require('../middleware/authMiddleware');
 const volunteerController = require('../controllers/volunteerController');
 const { validate } = require('../middleware/validateInput');
+const { registerVolunteerValidation } = require('../validations/volunteerValidation');
 
 
-router.post('/register',authenticate, [
-    body('service_type').isIn(['teaching', 'medical', 'counseling', 'administration', 'maintenance', 'other']),
-    body('availability')
-      .isIn(['weekdays', 'weekends', 'evenings', 'mornings', 'flexible', 'on-call', 'other'])
-      .withMessage('Invalid availability value')
-  ],
+
+router.post('/register',authenticate,registerVolunteerValidation ,
   validate, volunteerController.registerVolunteer);
 
 router.delete('/delete', authenticate, volunteerController.deleteVolunteer);
