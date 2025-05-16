@@ -20,7 +20,11 @@ exports.getOrphanageById = async (id) => {
 };
 
  
-exports.verifyOrphanage = async (id) => {
-  const [rows] = await db.query('SELECT * FROM orphanages WHERE orphanage_id = ?', [id]);
-  return rows[0];
+exports.updateVerifiedStatus = async (orphanageId, isVerified) => {
+  const [result] = await db.query(
+    'UPDATE orphanages SET verified = ? WHERE orphanage_id = ?',
+    [isVerified, orphanageId]
+  );
+  return result.affectedRows;
 };
+//UPDATE orphanages SET verified = ? WHERE orphanage_id` = ?;

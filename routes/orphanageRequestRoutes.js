@@ -29,4 +29,6 @@ router.post(
   requestController.createRequest
 );
 
+router.put('/:id/verify', authenticate, requestController.updateVerifiedStatus);
+
 module.exports = router;
