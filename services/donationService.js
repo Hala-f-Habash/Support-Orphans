@@ -1,9 +1,12 @@
 const donationRepo = require('../repositories/donationRepository');
 const paymentService = require('./paymentService');
-const db = require('../config/db');
-const donationTrackRepo = require("../repositories/donationTrackingRepository")
+const deliveryService = require('./deliveryService');
 
-exports.createDonation = async (donationData) => {
+const db = require('../config/db');
+const donationTrackRepo = require("../repositories/donationTrackingRepository");
+
+
+exports.createDonation = async (donationData,userLocation, locationStr) => {
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
@@ -41,12 +44,25 @@ exports.createDonation = async (donationData) => {
       update_message: 'Donation received and being processed'
     });
 
+    let deliveryInfo = null;
+    if (donationData.type !== 'money') {
+      // Assign delivery only for non-monetary donations
+      deliveryInfo = await deliveryService.assignDeliveryToDriver(
+        donationId,
+        userLocation,
+        locationStr
+      );
+    }
+
+
     await connection.commit();
 return {
-  donationId,
+   donationId, 
+   deliveryInfo,
   fee: paymentResult.fee,
   netAmount: donationData.amount
 };
+  
   } catch (error) {
     await connection.rollback();
     throw error;
