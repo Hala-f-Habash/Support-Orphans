@@ -282,7 +282,15 @@ CREATE TABLE orphanupdates (
 
 LOCK TABLES orphanupdates WRITE;
 /*!40000 ALTER TABLE orphanupdates DISABLE KEYS */;
-INSERT INTO orphanupdates VALUES (1,1,'education','Child started school again','C:\\Users\\97059\\Desktop\\All Semesters\\2\'nd semester 2024-2025\\Advanced software\\Project_hopeconnect\\uploads\\p1.jpg','2025-05-11 11:32:37');
+INSERT INTO orphanupdates 
+VALUES (
+  1, 
+  1, 
+  'education', 
+  'Child started school again', 
+  'C:\\Users\\97059\\Desktop\\All Semesters\\2''nd semester 2024-2025\\Advanced software\\Project_hopeconnect\\uploads\\p1.jpg', 
+  '2025-05-11 11:32:37'
+);
 /*!40000 ALTER TABLE orphanupdates ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -482,3 +490,40 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-05-16 13:42:56
+
+
+CREATE TABLE delivery_tracking (
+  log_id INT AUTO_INCREMENT PRIMARY KEY,
+  delivery_id INT,
+  status ENUM('pending','in_transit','done') NOT NULL,
+  location VARCHAR(255),
+  current_lat DOUBLE,
+  current_lng DOUBLE,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (delivery_id) REFERENCES deliveries(delivery_id)
+);
+
+CREATE TABLE drivers (
+  driver_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  phone VARCHAR(20),
+  is_available BOOLEAN DEFAULT TRUE
+);
+
+
+ALTER TABLE deliveries 
+  ADD COLUMN lat DECIMAL(10, 8) DEFAULT NULL,
+  ADD COLUMN lng DECIMAL(11, 8) DEFAULT NULL,
+ADD COLUMN delivery_time DATETIME DEFAULT NULL,
+  ADD COLUMN driver_id INT DEFAULT NULL,
+  ADD FOREIGN KEY (driver_id) REFERENCES drivers(driver_id);
+
+CREATE TABLE delivery_log (
+  log_id INT AUTO_INCREMENT PRIMARY KEY,
+  delivery_id INT,
+  lat DECIMAL(10, 8),
+  lng DECIMAL(11, 8),
+  status ENUM('pending','in_transit','done'),
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (delivery_id) REFERENCES deliveries(delivery_id)
+);
