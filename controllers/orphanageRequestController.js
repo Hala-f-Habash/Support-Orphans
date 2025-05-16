@@ -23,3 +23,24 @@ exports.createRequest = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+exports.updateVerifiedStatus = async (req, res) => {
+  try {
+
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ 
+        success: false,
+        error: 'Only admins can verify orphanages' 
+      });
+    }
+    const orphanageId = req.params.id;
+    const { verified } = req.body;
+
+
+    const result = await requestService.updateVerifiedStatus(req.user, orphanageId, verified);
+    res.json({ success: true, message: 'Verification status updated', data: result });
+  } catch (error) {
+    res.status(403).json({ success: false, error: error.message });
+  }
+};

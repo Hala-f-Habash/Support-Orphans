@@ -31,6 +31,7 @@ app.use('/api/donations', donation);
 
 app.use('/api/volunteers',volunteers);
 app.use('/api/requests', orphanageRequestRoutes);
+app.use('/api/orphanage', orphanageRequestRoutes);
 app.use('/api/match', volunteerMatchRoutes);
 app.use('/api/reviews', reviewRoutes);
 //app.use('/api/deliveries', deliveryRoutes);

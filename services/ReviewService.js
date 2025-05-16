@@ -2,9 +2,14 @@ const reviewRepo = require('../repositories/ReviewRepository');
 const orphanageService = require('./orphanageRequestService');
 
 
-   exports.createReview = async (reviewData)=> 
-      await reviewRepo.insertReview(reviewData);
-  
+   exports.createReview = async (reviewData)=> {
+
+    const orphanage = await orphanageService.getOrphanageById(reviewData.orphanage_id);
+    if (!orphanage ) {
+      throw new Error('no such orphanage with this id');
+   }
+
+      await reviewRepo.insertReview(reviewData);}
 
    exports.getAllReviews = async() =>
       reviewRepo.getAllReviews();

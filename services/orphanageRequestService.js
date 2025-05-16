@@ -18,3 +18,18 @@ exports.createRequest = async (data) => {
 exports.getOrphanageById = async (id) => {
   return await requestRepo.getOrphanageById(id);
 };
+
+
+exports.updateVerifiedStatus = async (user, orphanageId, isVerified) => {
+  if (user.role !== 'admin') {
+    throw new Error('Only admin users can verify orphanages');
+  }
+
+  const rowsAffected = await requestRepo.updateVerifiedStatus(orphanageId, isVerified);
+  if (rowsAffected === 0) {
+    throw new Error('Orphanage not found or not updated');
+  }
+
+  return { orphanageId, verified: isVerified };
+};
+
