@@ -1,4 +1,4 @@
-const db = require('../config/db'); // Adjust path as needed
+const db = require('../config/db'); 
 
 exports.getAvailableDriver = async () => {
   const [rows] = await db.query(
@@ -28,4 +28,21 @@ exports.createDriver = async (name, phone) => {
     [name, phone]
   );
   return result.insertId;
+};
+
+
+exports.getAllDrivers = async () => {
+  const [rows] = await db.query('SELECT * FROM drivers');
+  return rows;
+};
+
+exports.getAvailableDrivers = async () => {
+  const [rows] = await db.query('SELECT * FROM drivers WHERE is_available = TRUE');
+  return rows;
+};
+
+
+
+exports.deleteDriver = async (driverId) => {
+  await db.query('DELETE FROM drivers WHERE driver_id = ?', [driverId]);
 };

@@ -433,7 +433,7 @@ CREATE TABLE users (
   `name` varchar(100) DEFAULT NULL,
   email varchar(100) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `role` enum('admin','donor','volunteer','orphanageManager','sponsor') DEFAULT NULL,
+  `role` enum('admin','donor','volunteer','orphanageManager','sponsor','driver') DEFAULT NULL,
   created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id),
   UNIQUE KEY email (email)
