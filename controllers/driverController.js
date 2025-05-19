@@ -4,9 +4,13 @@ const driverService = require('../services/driverService');
 exports.createDriver = async (req, res) => {
   try {
 
+    if (req.user.role !== "admin"){
+      throw new Error('You are not authorized to add driver');
+    }
     const { name, phone } = req.body;
     const driverId = await driverService.createDriver(name, phone);
     res.status(201).json({ success: true, message: 'Driver created', driverId });
+
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
