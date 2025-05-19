@@ -40,7 +40,7 @@ exports.createDonation = async (donationData,userLocation, locationStr) => {
 
     await donationTrackRepo.createDonationTracking({
       donation_id: donationId,
-      status: 'received',
+      status:  donationData.type === 'money'?'received':'pending',
       update_message: 'Donation received and being processed'
     });
 
