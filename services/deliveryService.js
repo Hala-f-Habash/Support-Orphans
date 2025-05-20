@@ -1,15 +1,18 @@
 const deliveryRepo = require('../repositories/deliveryRepository');
 const driverRepo = require('../repositories/driverRepository');
 
-exports.assignDeliveryToDriver = async (donationId, userLocation, locationStr) => {
+const { getCoordinatesFromLocation } = require('../utils/axios');
+
+exports.assignDeliveryToDriver = async (donationId, locationStr) => {
+  const { lat, lng } = await getCoordinatesFromLocation(locationStr);
   const freeDriver = await driverRepo.getAvailableDriver();
 
   const deliveryData = {
     donation_id: donationId,
     assigned_to: freeDriver ? freeDriver.name : null,
     location: locationStr,
-    lat: userLocation.lat,
-    lng: userLocation.lng,
+    lat,
+    lng,
     driver_id: freeDriver ? freeDriver.driver_id : null
   };
 
@@ -24,7 +27,8 @@ exports.assignDeliveryToDriver = async (donationId, userLocation, locationStr) =
     message: freeDriver
       ? `Delivery assigned to driver ${freeDriver.name}, process will start within a week`
       : 'Delivery created but no driver was available at the moment.',
-    driver: freeDriver ? freeDriver.name : null
+    driver: freeDriver ? freeDriver.name : null,
+    mapUrl: `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`
   };
 };
 

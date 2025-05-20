@@ -5,12 +5,12 @@ const deliveryService = require('./deliveryService');
 const db = require('../config/db');
 const donationTrackRepo = require("../repositories/donationTrackingRepository");
 
+const { getCoordinatesFromLocation } = require('../utils/axios');
 
-exports.createDonation = async (donationData,userLocation, locationStr) => {
+exports.createDonation = async (donationData, locationStr) => {
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
-
 
     let paymentResult = { success: true, fee: 0, netAmount: donationData.amount };
     if (donationData.type === 'money') {
@@ -18,17 +18,14 @@ exports.createDonation = async (donationData,userLocation, locationStr) => {
         amount: donationData.amount,
         donorId: donationData.user_id
       });
-      
+
       if (!paymentResult.success) {
         throw new Error(paymentResult.error || 'Payment processing failed');
       }
       donationData.amount = paymentResult.netAmount;
-
     }
 
-
     const donationId = await donationRepo.createDonation(donationData);
-    
 
     if (donationData.type === 'money' && paymentResult.transactionId) {
       await connection.query(
@@ -37,32 +34,28 @@ exports.createDonation = async (donationData,userLocation, locationStr) => {
       );
     }
 
-
     await donationTrackRepo.createDonationTracking({
       donation_id: donationId,
-      status:  donationData.type === 'money'?'received':'pending',
+      status: donationData.type === 'money' ? 'received' : 'pending',
       update_message: 'Donation received and being processed'
     });
 
     let deliveryInfo = null;
     if (donationData.type !== 'money') {
-      // Assign delivery only for non-monetary donations
       deliveryInfo = await deliveryService.assignDeliveryToDriver(
         donationId,
-        userLocation,
-        locationStr
+        locationStr // location string only
       );
     }
 
-
     await connection.commit();
-return {
-   donationId, 
-   deliveryInfo,
-  fee: paymentResult.fee,
-  netAmount: donationData.amount
-};
-  
+
+    return {
+      donationId,
+      deliveryInfo,
+      fee: paymentResult.fee,
+      netAmount: donationData.amount
+    };
   } catch (error) {
     await connection.rollback();
     throw error;
@@ -70,6 +63,7 @@ return {
     connection.release();
   }
 };
+
 
 exports.getAllDonations = async () => donationRepo.getAllDonations();
 

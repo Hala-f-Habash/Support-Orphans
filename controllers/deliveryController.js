@@ -1,30 +1,37 @@
 const deliveryService = require('../services/deliveryService');
 
-const {getLocationFromIP} = require("../utils/axios");
+const { getCoordinatesFromLocation } = require('../utils/axios');
 
-exports.createDelivery = async (req, res) => { /// for testing 
+exports.createDelivery = async (req, res) => {
   try {
     const { donation_id, location } = req.body;
-    const userLocation = await getLocationFromIP(req); 
 
+    if (!location) {
+      return res.status(400).json({ success: false, error: 'Location is required' });
+    }
 
-const { deliveryId, message, driver } = await deliveryService.assignDeliveryToDriver(
-  donation_id,
-  userLocation,
-  location
-);
+    const { lat, lng } = await getCoordinatesFromLocation(location);
 
-res.status(201).json({
-  success: true,
-  message,
-  deliveryId,
-  assignedDriver: driver
-});
+    const { deliveryId, message, driver } = await deliveryService.assignDeliveryToDriver(
+      donation_id,
+      { lat, lng },
+      location
+    );
+
+    res.status(201).json({
+      success: true,
+      message,
+      deliveryId,
+      assignedDriver: driver,
+      mapUrl: `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`
+    });
 
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+
 
 
 
