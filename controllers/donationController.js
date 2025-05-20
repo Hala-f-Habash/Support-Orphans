@@ -1,12 +1,10 @@
 const donationService = require('../services/donationService');
 
-const {getLocationFromIP} = require("../utils/axios");
+//const {getLocationFromIP} = require("../utils/axios");
 
 
 exports.createDonation = async (req, res) => {
   try {
-    //console.log('Decoded user from token:', req.user);
-
     const allowedRoles = ['donor', 'sponsor', 'admin'];
     if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({ 
@@ -15,38 +13,34 @@ exports.createDonation = async (req, res) => {
       });
     }
 
-
     const donationData = {
       ...req.body,
       user_id: req.user.userId   
     };
-        const userLocation = await getLocationFromIP(req); 
 
-        const locationStr = req.body.location;
+    const locationStr = req.body.location;
 
-   const { donationId, deliveryInfo, fee, netAmount  }= await donationService.createDonation(donationData,userLocation,locationStr);
+    const { donationId, deliveryInfo, fee, netAmount } = await donationService.createDonation(
+      donationData,
+      locationStr // only send this
+    );
 
-   if(fee === 0){
-
+    if (fee === 0) {
       res.status(201).json({ 
-      success: true,
-      donationId,
-      message: 'Donation created successfully',
-      ...(deliveryInfo && { delivery: deliveryInfo })
-    });
-
-   }else{
-
+        success: true,
+        donationId,
+        message: 'Donation created successfully',
+        ...(deliveryInfo && { delivery: deliveryInfo })
+      });
+    } else {
       res.status(201).json({ 
-  success: true,
-  donationId,
-  platform_fee: fee,
-  amount_sent_to_cause: netAmount,
-  message: 'Donation created successfully'
-});
-
-   }
-
+        success: true,
+        donationId,
+        platform_fee: fee,
+        amount_sent_to_cause: netAmount,
+        message: 'Donation created successfully'
+      });
+    }
   } catch (error) {
     res.status(400).json({ 
       success: false,
@@ -54,6 +48,7 @@ exports.createDonation = async (req, res) => {
     });
   }
 };
+
 
 exports.getAllDonations = async (req, res) => {
   try {

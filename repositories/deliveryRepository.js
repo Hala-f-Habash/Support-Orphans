@@ -2,10 +2,28 @@ const db = require('../config/db');
 
 
 
+// exports.createDelivery = async (data) => {
+//   const [result] = await db.query(
+//     'INSERT INTO deliveries (donation_id, status, assigned_to, location, lat, lng, driver_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+//     [data.donation_id, 'pending', data.assigned_to, data.location, data.lat, data.lng, data.driver_id]
+//   );
+//   return result.insertId;
+// };
+
 exports.createDelivery = async (data) => {
   const [result] = await db.query(
-    'INSERT INTO deliveries (donation_id, status, assigned_to, location, lat, lng, driver_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [data.donation_id, 'pending', data.assigned_to, data.location, data.lat, data.lng, data.driver_id]
+    `INSERT INTO deliveries 
+     (donation_id, status, assigned_to, location, lat, lng, driver_id) 
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      data.donation_id,
+      'pending',                         
+      data.assigned_to,
+      data.location,                    
+      data.lat,                         
+      data.lng,                         
+      data.driver_id                   
+    ]
   );
   return result.insertId;
 };
