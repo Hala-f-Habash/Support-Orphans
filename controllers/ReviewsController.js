@@ -67,34 +67,6 @@ exports.getReviewsByOrphanage = async (req, res) => {
   }
 };
 
-// exports.updateReview = async (req, res) => {
-
-//   try {
-
-// const reviewData = {
-//   user_id: req.user.userId, 
-//   orphanage_id: req.body.orphanage_id,
-//   rating: req.body.rating,
-//   comment: req.body.comment
-// };
-
-// const reviewId = await reviewService.createReview(reviewData);
-
-//     if (req.user.role !== 'admin') {
-//       return res.status(403).json({ 
-//         success: false,
-//         error: 'Only admins can update Reviews' 
-//       });
-//     }
-
-//     await reviewService.updateReview(req.params.id, req.body);
-//     res.json({ message: 'Review updated successfully' });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
-
 
 exports.deleteReview = async (req, res) => {
   try {
